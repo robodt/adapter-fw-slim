@@ -9,15 +9,14 @@ use Slim;
 class AdapterFrameworkSlim
 {
     public $site;
-    public $container;
-    public $robodt;
-    public $app;
+    // public $container;
+    // public $robodt;
+    // public $app;
 
     public function __construct($site)
     {
         $this->site = $site;
         $container = new \Pimple();
-        // $this->robodt = new Robodt\Robodt($site);
         $container['app'] = $container->share( function ()
         {
             return new \Slim\Slim( array(
@@ -59,54 +58,6 @@ class AdapterFrameworkSlim
         });
 
         $container['app']->run();
-
-        // $this->routes();
-        // $this->routeExtension();
-        // $this->routeRobodt();
-        // $this->run();
-    }
-
-    // settings
-    // hooks
-    // routers
-    // logging
-    // theming?
-
-    public function routeRobodt()
-    {
-        print 'routeRobodt<br />';
-        $this->app->get('/(:url+)', \Robodt\Adapter\Framework\Slim\AdapterFrameworkSlim::routeRobodtExecute());
-    }
-
-    static public function instance()
-    {
-        return $this->robodt;
-    }
-
-    static public function routeRobodtExecute($uri = array())
-    {
-        $response = \Robodt\Adapter\Framework\Slim\AdapterFrameworkSlim::instance()->render($uri);
-        $response['debug'] = $response;
-        $template = implode( DIRECTORY_SEPARATOR, array(
-            $this->site,
-            'theme'));
-        $cms->app->config(array('templates.path' => $template));
-        $cms->app->render('template.php', $response, $response['request']['status']);
-    }
-
-    public function routeExtension()
-    {
-        print 'routeExtension<br />';
-        $this->app->get('/blog', function()
-        {
-            print 'blog!';
-        });
-    }
-
-    public function run()
-    {
-        print 'run<br />';
-        $this->app->run();
     }
 
 }
