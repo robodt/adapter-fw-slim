@@ -7,6 +7,9 @@
  * @copyright   2013 Zomnium, Tim van Bergenhenegouwen
  */
 
+// NOTE: Hardcoded site directory
+$site = __dir__ . "/../../../../site";
+
 // Register Slim Framework
 $app = new \Slim\Slim();
 
@@ -33,3 +36,6 @@ $app->get('/(:url+)', function ($uri = array()) use ($app)
     $app->config(array('templates.path' => $template));
     $app->render('template.php', $response, $response['request']['status']);
 });
+
+// Run application
+$app->run();
