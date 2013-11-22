@@ -23,6 +23,6 @@
 		"robodt/robodt": "0.1.*"
 	},
 	"autoload": {
-		"psr-0": { "Slim": "src/" }
+		"psr-0": { "": "src/" }
 	}
 }
