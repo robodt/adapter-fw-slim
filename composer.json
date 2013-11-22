@@ -20,9 +20,10 @@
 	],
 	"require": {
 		"php": ">=5.3",
+		"slim/slim": "2.3.*",
 		"robodt/robodt": "0.1.*"
 	},
 	"autoload": {
-		"psr-0": { "": "src/" }
+		"files": ["src/Slim.php"]
 	}
 }
