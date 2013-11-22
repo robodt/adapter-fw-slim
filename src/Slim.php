@@ -7,7 +7,6 @@
  * @copyright   2013 Zomnium, Tim van Bergenhenegouwen
  */
 
-
 // Register Slim Framework
 $app = new \Slim\Slim();
 

@@ -21,5 +21,8 @@
 	"require": {
 		"php": ">=5.3",
 		"robodt/robodt": "0.1.*"
+	},
+	"autoload": {
+		"psr-0": { "Slim": "src/" }
 	}
 }
