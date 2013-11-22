@@ -1,63 +1,36 @@
 <?php
 
-namespace Robodt\Adapter\Framework\Slim;
+/**
+ * Robodt - Markdown CMS
+ * @author      Zomnium
+ * @link        http://www.zomnium.com
+ * @copyright   2013 Zomnium, Tim van Bergenhenegouwen
+ */
 
-use Pimple;
-use Robodt;
-use Slim;
 
-class AdapterFrameworkSlim
+// Register Slim Framework
+$app = new \Slim\Slim();
+
+// Get and set site directory
+$app->site = function () use ($site)
 {
-    public $site;
-    // public $container;
-    // public $robodt;
-    // public $app;
+    return $site;
+};
 
-    public function __construct($site)
-    {
-        $this->site = $site;
-        $container = new \Pimple();
-        $container['app'] = $container->share( function ()
-        {
-            return new \Slim\Slim( array(
+// Register Robodt as container
+$app->container->singleton('robodt', function() use ($site, $app)
+{
+    return new \Robodt\Robodt($site);
+});
 
-                // Development
-                'mode' => 'development',
-                'debug' => true,
-                'log.level' => \Slim\Log::DEBUG,
-
-                // Cookies
-                'cookies.lifetime' => '20 minutes',
-                'cookies.path' => '/',
-                'cookies.domain' => 'robodt.dev',
-                'cookies.secure' => false,
-                'cookies.httponly' => false,
-                'cookies.secret_key' => 'ultrasonicsecret',
-                'cookies.cipher' => MCRYPT_RIJNDAEL_256,
-                'cookies.cipher_mode' => MCRYPT_MODE_CBC,
-
-                // Protocol
-                'http.version' => '1.1',
-            ));
-        });
-
-        $container['robodt'] = $container->share( function () use ($site)
-        {
-            return new \Robodt\Robodt($site);
-        });
-
-        $container['app']->get('/(:url+)', function ( $uri = array() ) use ($container, $site)
-        {
-            $response = $container['robodt']->render($uri);
-            $response['debug'] = $response;
-            $template = implode( DIRECTORY_SEPARATOR, array(
-                $site,
-                'theme'));
-            $container['app']->config(array('templates.path' => $template));
-            $container['app']->render('template.php', $response, $response['request']['status']);
-        });
-
-        $container['app']->run();
-    }
-
-}
+// Main route controller
+$app->get('/(:url+)', function ($uri = array()) use ($app)
+{
+    $response = $app->robodt->render($uri);
+    $response['debug'] = $response;
+    $template = implode( DIRECTORY_SEPARATOR, array(
+        $app->site,
+        'theme'));
+    $app->config(array('templates.path' => $template));
+    $app->render('template.php', $response, $response['request']['status']);
+});
