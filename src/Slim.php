@@ -26,8 +26,9 @@ $app->container->singleton('robodt', function() use ($site, $app)
 });
 
 // Main route controller
-$app->get('/(:url+)', function ($uri = array()) use ($app)
+$app->get('/(:url+)', function ($uri = array())
 {
+	$app = \Slim\Slim::getInstance();
     $response = $app->robodt->render($uri);
     $response['debug'] = $response;
     $template = implode( DIRECTORY_SEPARATOR, array(
