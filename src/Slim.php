@@ -33,14 +33,15 @@ class FrameworkSlim
 
     public function mainRoute($route)
     {
-        $this->app->get($route . '(:url+)', function ($uri = array())
+        return $this->app->get($route . '(:url+)', function ($uri = array())
         {
             $app = \Slim\Slim::getInstance();
+
             $response = $app->robodt->render($uri);
             $response['debug'] = $response;
-            $template = implode( DIRECTORY_SEPARATOR, array(
-                $app->site,
-                'theme'));
+
+            $template = $app->site . 'theme';
+
             $app->config(array('templates.path' => $template));
             $app->render('template.php', $response, $response['request']['status']);
         });
