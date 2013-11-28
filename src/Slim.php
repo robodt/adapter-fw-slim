@@ -7,36 +7,47 @@
  * @copyright   2013 Zomnium, Tim van Bergenhenegouwen
  */
 
-// NOTE: Hardcoded site directory
-$site = __dir__ . "/../../../../site";
+namespace Robodt\Adapter;
 
-// Register Slim Framework
-$app = new \Slim\Slim();
-
-// Get and set site directory
-$app->site = function () use ($site)
+class FrameworkSlim
 {
-    return $site;
-};
+    public $app;
 
-// Register Robodt as container
-$app->container->singleton('robodt', function() use ($site, $app)
-{
-    return new \Robodt\Robodt($site);
-});
+    public function __construct($site)
+    {
+        // Register Slim Framework
+        $this->app = new \Slim\Slim();
 
-// Main route controller
-$app->get('/(:url+)', function ($uri = array())
-{
-	$app = \Slim\Slim::getInstance();
-    $response = $app->robodt->render($uri);
-    $response['debug'] = $response;
-    $template = implode( DIRECTORY_SEPARATOR, array(
-        $app->site,
-        'theme'));
-    $app->config(array('templates.path' => $template));
-    $app->render('template.php', $response, $response['request']['status']);
-});
+        // Get and set site directory
+        $this->app->site = function () use ($site)
+        {
+            return $site;
+        };
 
-// Run application
-$app->run();
+        // Register Robodt as container
+        $this->app->container->singleton('robodt', function() use ($site)
+        {
+            return new \Robodt\Robodt($site);
+        });
+    }
+
+    public function mainRoute($route)
+    {
+        $this->app->get($route . '(:url+)', function ($uri = array())
+        {
+            $app = \Slim\Slim::getInstance();
+            $response = $app->robodt->render($uri);
+            $response['debug'] = $response;
+            $template = implode( DIRECTORY_SEPARATOR, array(
+                $app->site,
+                'theme'));
+            $app->config(array('templates.path' => $template));
+            $app->render('template.php', $response, $response['request']['status']);
+        });
+    }
+
+    public function run()
+    {
+        $this->app->run();
+    }
+}
