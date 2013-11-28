@@ -31,9 +31,14 @@ class FrameworkSlim
         });
     }
 
+    public function get($route, $callback)
+    {
+        return $this->app->get($route, $callback);
+    }
+
     public function mainRoute($route)
     {
-        return $this->app->get($route . '(:url+)', function ($uri = array())
+        return $this->get($route . '(:url+)', function ($uri = array())
         {
             $app = \Slim\Slim::getInstance();
 
