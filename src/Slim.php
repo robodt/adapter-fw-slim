@@ -11,21 +11,21 @@ namespace Robodt\Adapter;
 
 class FrameworkSlim
 {
-    public $app;
+    public $framework;
 
     public function __construct($site)
     {
         // Register Slim Framework
-        $this->app = new \Slim\Slim();
+        $this->framework = new \Slim\Slim();
 
         // Get and set site directory
-        $this->app->site = function () use ($site)
+        $this->framework->site = function () use ($site)
         {
             return $site;
         };
 
         // Register Robodt as container
-        $this->app->container->singleton('robodt', function() use ($site)
+        $this->framework->container->singleton('robodt', function() use ($site)
         {
             return new \Robodt\Robodt($site);
         });
@@ -33,27 +33,27 @@ class FrameworkSlim
 
     public function get($route, $callback)
     {
-        return $this->app->get($route, $callback);
+        return $this->framework->get($route, $callback);
     }
 
     public function mainRoute($route)
     {
         return $this->get($route . '(:url+)', function ($uri = array())
         {
-            $app = \Slim\Slim::getInstance();
+            $framework = \Slim\Slim::getInstance();
 
-            $response = $app->robodt->render($uri);
+            $response = $framework->robodt->render($uri);
             $response['debug'] = $response;
 
-            $template = $app->site . 'theme';
+            $template = $framework->site . 'theme';
 
-            $app->config(array('templates.path' => $template));
-            $app->render('template.php', $response, $response['request']['status']);
+            $framework->config(array('templates.path' => $template));
+            $framework->render('template.php', $response, $response['request']['status']);
         });
     }
 
     public function run()
     {
-        $this->app->run();
+        $this->framework->run();
     }
 }
