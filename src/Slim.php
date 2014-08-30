@@ -27,7 +27,9 @@ class FrameworkSlim
         // Register Robodt as container
         $this->framework->container->singleton('robodt', function() use ($site)
         {
-            return new \Robodt\Robodt($site);
+            return new \Robodt\Robodt(array(
+                'site' => $site,
+                ));
         });
     }
 
@@ -42,13 +44,15 @@ class FrameworkSlim
         {
             $framework = \Slim\Slim::getInstance();
 
-            $response = $framework->robodt->render($uri);
+            $response = $framework->robodt->get($uri);
             $response['debug'] = $response;
+            $response['robodt'] = $framework->robodt;
 
             $template = $framework->site . 'theme';
 
             $framework->config(array('templates.path' => $template));
             $framework->render('template.php', $response, $response['request']['status']);
+            // $framework->render('layout.php', array('robodt' => $framework->robodt), $response['request']['status']);
         });
     }
 
