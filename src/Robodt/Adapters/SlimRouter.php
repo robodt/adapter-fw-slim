@@ -16,23 +16,28 @@ class SlimRouter extends Component implements RobodtRouter
 {
     /* routing */
 
+    private function transformVariables($input)
+    {
+        return str_replace('{', ':', str_replace('}', '', $input));
+    }
+
     public function get($route, $callback)
     {
-        return $this->robodt->framework->get($route, $callback);
+        return $this->robodt->framework->get($this->transformVariables($route), $callback);
     }
 
     public function post($route, $callback)
     {
-        return $this->robodt->framework->post($route, $callback);
+        return $this->robodt->framework->post($this->transformVariables($route), $callback);
     }
 
     public function put($route, $callback)
     {
-        return $this->robodt->framework->put($route, $callback);
+        return $this->robodt->framework->put($this->transformVariables($route), $callback);
     }
 
     public function delete($route, $callback)
     {
-        return $this->robodt->framework->delete($route, $callback);
+        return $this->robodt->framework->delete($this->transformVariables($route), $callback);
     }
 }
